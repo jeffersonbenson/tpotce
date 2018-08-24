@@ -105,10 +105,8 @@ rm -rf /usr/share/nginx/html/index.html 2>&1 | dialog --title "[ Removing NGINX 
 tput cnorm
 myFLAVOR=$(dialog --no-cancel --backtitle "$myBACKTITLE" --title "[ Choose your edition ]" --no-tags --menu \
 "\nRequired: 4GB RAM, 64GB disk\nRecommended: 8GB RAM, 128GB SSD" 14 60 4 \
-"TPOT" "Standard Honeypots, Suricata & ELK" \
-"HP" "Honeypots only, w/o Suricata & ELK" \
-"INDUSTRIAL" "Conpot, eMobility, Suricata & ELK" \
-"EVERYTHING" "Everything" 3>&1 1>&2 2>&3 3>&-)
+"TPOT" "Standard Honeypots & Suricata" \
+ 3>&1 1>&2 2>&3 3>&-)
 
 # Let's ask for a secure tsec password
 myUSER="tsec"
@@ -362,21 +360,9 @@ EOF
 
 # Let's make sure only myFLAVOR images will be downloaded and started
 case $myFLAVOR in
-  HP)
-    echo "### Preparing HONEYPOT flavor installation."
-    cp /opt/tpot/etc/compose/hp.yml $myTPOTCOMPOSE 2>&1>/dev/null
-  ;;
-  INDUSTRIAL)
-    echo "### Preparing INDUSTRIAL flavor installation."
-    cp /opt/tpot/etc/compose/industrial.yml $myTPOTCOMPOSE 2>&1>/dev/null
-  ;;
   TPOT)
     echo "### Preparing TPOT flavor installation."
     cp /opt/tpot/etc/compose/tpot.yml $myTPOTCOMPOSE 2>&1>/dev/null
-  ;;
-  EVERYTHING)
-    echo "### Preparing EVERYTHING flavor installation."
-    cp /opt/tpot/etc/compose/all.yml $myTPOTCOMPOSE 2>&1>/dev/null
   ;;
 esac
 
