@@ -87,7 +87,6 @@ services:
   logstash:
     container_name: logstash
     restart: always
-    depends_on:
     env_file:
      - /opt/tpot/etc/compose/elk_environment
     image: "dtagdevsec/logstash:1710"
