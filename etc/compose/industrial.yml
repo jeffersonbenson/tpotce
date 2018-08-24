@@ -25,40 +25,6 @@ services:
      - /data/conpot/log:/var/log/conpot
 
 # ELK services
-## Elasticsearch service
-  elasticsearch:
-    container_name: elasticsearch
-    restart: always
-    environment:
-     - bootstrap.memory_lock=true
-#     - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
-    cap_add:
-     - IPC_LOCK
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile:
-        soft: 65536
-        hard: 65536
-#    mem_limit: 2g
-    ports:
-     - "127.0.0.1:64298:9200"
-    image: "dtagdevsec/elasticsearch:1710"
-    volumes:
-     - /data:/data
-
-## Kibana service
-  kibana:
-    container_name: kibana
-    restart: always
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
-    ports:
-     - "127.0.0.1:64296:5601"
-    image: "dtagdevsec/kibana:1710"
-
 ## Logstash service
   logstash:
     container_name: logstash
@@ -72,17 +38,6 @@ services:
     volumes:
      - /data:/data
      - /var/log:/data/host/log
-
-## Elasticsearch-head service
-  head:
-    container_name: head
-    restart: always
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
-    ports:
-     - "127.0.0.1:64302:9100"
-    image: "dtagdevsec/head:1710"
 
 # Emobility service
   emobility:
@@ -111,36 +66,6 @@ services:
     volumes:
      - /data:/data
      - /data/ews/conf/ews.ip:/opt/ewsposter/ews.ip
-
-# Netdata service
-  netdata:
-    container_name: netdata
-    restart: always
-    network_mode: "host"
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
-    cap_add:
-     - SYS_PTRACE
-    security_opt:
-     - apparmor=unconfined
-    image: "dtagdevsec/netdata:1710"
-    volumes:
-     - /proc:/host/proc:ro
-     - /sys:/host/sys:ro
-     - /var/run/docker.sock:/var/run/docker.sock
-
-# Spiderfoot service
-  spiderfoot:
-    container_name: spiderfoot
-    restart: always
-    networks:
-     - spiderfoot_local
-    ports:
-     - "127.0.0.1:64303:8080"
-    image: "dtagdevsec/spiderfoot:1710"
-    volumes:
-     - /data/spiderfoot/spiderfoot.db:/home/spiderfoot/spiderfoot.db
 
 # Ui-for-docker service
   ui-for-docker:

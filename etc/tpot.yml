@@ -10,6 +10,7 @@ networks:
   glastopf_local:
   mailoney_local:
   rdpy_local:
+  spiderfoot_local:
   ui-for-docker_local:
   vnclowpot_local:
 
@@ -146,6 +147,24 @@ services:
     volumes:
      - /data/mailoney/log:/opt/mailoney/logs
 
+# Netdata service
+  netdata:
+    container_name: netdata
+    restart: always
+    network_mode: "host"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    cap_add:
+     - SYS_PTRACE
+    security_opt:
+     - apparmor=unconfined
+    image: "dtagdevsec/netdata:1710"
+    volumes:
+     - /proc:/host/proc:ro
+     - /sys:/host/sys:ro
+     - /var/run/docker.sock:/var/run/docker.sock
+
 # Rdpy service
   rdpy:
     container_name: rdpy
@@ -157,6 +176,18 @@ services:
     image: "dtagdevsec/rdpy:1710"
     volumes:
      - /data/rdpy/log:/var/log/rdpy
+
+# Spiderfoot service
+  spiderfoot:
+    container_name: spiderfoot
+    restart: always
+    networks:
+     - spiderfoot_local
+    ports:
+     - "127.0.0.1:64303:8080"
+    image: "dtagdevsec/spiderfoot:1710"
+    volumes:
+     - /data/spiderfoot/spiderfoot.db:/home/spiderfoot/spiderfoot.db
 
 # Ui-for-docker service
   ui-for-docker:
