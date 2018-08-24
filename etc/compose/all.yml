@@ -99,40 +99,6 @@ services:
      - /data/elasticpot/log:/opt/ElasticpotPY/log
 
 # ELK services
-## Elasticsearch service
-  elasticsearch:
-    container_name: elasticsearch
-    restart: always
-    environment:
-     - bootstrap.memory_lock=true
-#     - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
-    cap_add:
-     - IPC_LOCK
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile:
-        soft: 65536
-        hard: 65536
-#    mem_limit: 2g
-    ports:
-     - "127.0.0.1:64298:9200"
-    image: "dtagdevsec/elasticsearch:1710"
-    volumes:
-     - /data:/data
-
-## Kibana service
-  kibana:
-    container_name: kibana
-    restart: always
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
-    ports:
-     - "127.0.0.1:64296:5601"
-    image: "dtagdevsec/kibana:1710"
-
 ## Logstash service
   logstash:
     container_name: logstash
@@ -146,17 +112,6 @@ services:
     volumes:
      - /data:/data
      - /var/log:/data/host/log
-
-## Elasticsearch-head service
-  head:
-    container_name: head
-    restart: always
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
-    ports:
-     - "127.0.0.1:64302:9100"
-    image: "dtagdevsec/head:1710"
 
 # Emobility service
   emobility:
